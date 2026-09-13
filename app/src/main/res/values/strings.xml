@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">内录机</string>
+    <string name="app_name_en">Internal Recorder</string>
+
+    <string name="status_idle">待机</string>
+    <string name="status_recording">录制中</string>
+    <string name="btn_start">开始录制</string>
+    <string name="btn_stop">停止并保存</string>
+
+    <string name="src_capture">仅内录（其他 App 的声音）</string>
+    <string name="src_mic">仅麦克风</string>
+    <string name="src_both">内录 + 麦克风</string>
+
+    <string name="section_recordings">录音文件</string>
+    <string name="empty_recordings">还没有录音</string>
+
+    <string name="notif_channel">录制</string>
+    <string name="notif_title">正在录制</string>
+
+    <string name="menu_help">adb / agent 控制说明</string>
+    <string name="help_title">adb 控制</string>
+    <string name="help_message">这些命令可以在不碰手机的情况下启停录制（第一次仍需要在手机上点一次“开始录制”授权投屏）：\n\n开始：\nadb shell am broadcast -a dev.eye.internalrec.CONTROL --es cmd arm\n\n开录：\nadb shell am broadcast -a dev.eye.internalrec.CONTROL --es cmd start --es name take1\n\n停录：\nadb shell am broadcast -a dev.eye.internalrec.CONTROL --es cmd stop\n\n退出：\nadb shell am broadcast -a dev.eye.internalrec.CONTROL --es cmd quit\n\n文件在 Android/data/dev.eye.internalrec/files/Recordings，可以直接 adb pull。\n\n部分机型可以用 appops 预授权，跳过授权弹窗：\nadb shell appops set dev.eye.internalrec PROJECT_MEDIA allow</string>
+</resources>
