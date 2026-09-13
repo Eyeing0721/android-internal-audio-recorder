@@ -57,10 +57,13 @@ adb shell am broadcast -a dev.eye.internalrec.CONTROL -e cmd quit
 `arm` 那步没法纯广播完成——Android 10 起后台启动 Activity 会被系统拦，投屏授权弹窗必须有个前台界面。所以：
 
 ```
-adb shell am start -n dev.eye.internalrec/.MainActivity -e autoArm true
+adb shell am start -n dev.eye.internalrec/.MainActivity --ez autoArm true
 ```
 
-部分机型可以试试用 appops 预授权，跳过弹窗（不一定成，取决于 ROM）：
+（`--ez` 是布尔，`-e` 是字符串。App 两个都认，但 `--ez` 才是对的写法。）
+
+部分机型可以试试用 appops 预授权，跳过弹窗。**实测小米 2407FRK8EC / Android 16 上这条有效**，
+弹窗根本不出现，整条链零手动点击：
 
 ```
 adb shell appops set dev.eye.internalrec PROJECT_MEDIA allow
@@ -83,8 +86,24 @@ adb shell appops set dev.eye.internalrec PROJECT_MEDIA allow
 - **App 可以拒绝被录**。目标应用如果把 `allowAudioPlaybackCapture` 设成 false（有些银行、DRM 播放器会），录出来就是静音。这不是 bug，是系统的隐私开关，绕不过去。
 - **电话、部分系统声音录不到**。系统按 `AudioAttributes` 的 usage 过滤，通话那类不走内录。
 - **"内录+麦克风"不一定起得来**。Android 对同一个 App 同时抓内录和麦克风有限制，不少机型会直接拒绝。代码里试了，起不来会退化成只录内录，不会假装成功。
-- **没实测过真机**。这台机器上构建和签名都验过了（见下），但写这个的时候测试手机没连着，所以"装上去能不能出声"这一条我**没有实测证据**。真机验证记录会补在 Releases 里。
 - 非 root，所以录不了系统级混音里那些标记为不可捕获的流。
+
+## 真机实测
+
+小米 2407FRK8EC / Android 16，`adb install` 后走完整链路（结果在 `VERIFY.md`）：
+
+| 文件 | 时长 | mean_volume | 情况 |
+|---|---|---|---|
+| `rec-20260914-011457.wav` | 11.8s | **-91.0 dB** | 手机没在放声音时录的 → 静音 |
+| `rec-20260914-011536.wav` | 32.3s | **-16.1 dB**（峰值 -2.8） | 有音乐在放 → **录到了真声音** |
+
+两个文件都是 `pcm_s16le / 48000 Hz / 立体声`。
+
+第一个静音文件其实是这套验证里最有用的一个：**它证明录音不是"总能录到点什么"**，
+没声音的时候老老实实是 -91dB。只测"能录到声音"会漏掉这种伪造式通过。
+
+另外实测确认：`adb shell appops set dev.eye.internalrec PROJECT_MEDIA allow` 在这台机器上
+**能让投屏授权弹窗完全不出现**，所以 `arm → start → stop → pull` 整条链零手动点击。
 
 ## 自己构建
 

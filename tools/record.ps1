@@ -69,7 +69,7 @@ switch ($Cmd) {
     'arm' {
         Assert-Device
         Write-Host "拉起授权流程 —— 请在手机上点『允许』/『立即开始』" -ForegroundColor Yellow
-        Invoke-Adb @("shell", "am", "start", "-n", "$PKG/.MainActivity", "-e", "autoArm", "true", "-e", "source", $Source)
+        Invoke-Adb @("shell", "am", "start", "-n", "$PKG/.MainActivity", "--ez", "autoArm", "true", "-e", "source", $Source)
         Write-Host "`n授权后服务会一直挂着，之后直接用 start/stop。"
     }
 

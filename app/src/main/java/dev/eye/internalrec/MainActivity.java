@@ -87,12 +87,22 @@ public class MainActivity extends AppCompatActivity implements RecordingsAdapter
         refreshList();
 
         Intent it = getIntent();
-        if (it != null && it.getBooleanExtra("autoArm", false)) {
+        if (it != null && autoArmRequested(it)) {
             it.removeExtra("autoArm");
             String s = it.getStringExtra("source");
             if (s != null) pendingSource = s;
             beginCaptureFlow();
         }
+    }
+
+    /**
+     * adb 传布尔有两种写法：`--ez autoArm true`（真布尔）和 `-e autoArm true`（字符串）。
+     * 两个都认，免得用的人照着文档写了 `-e` 然后发现没反应。
+     */
+    private boolean autoArmRequested(Intent it) {
+        if (it.getBooleanExtra("autoArm", false)) return true;
+        String s = it.getStringExtra("autoArm");
+        return s != null && ("true".equalsIgnoreCase(s) || "1".equals(s));
     }
 
     @Override
