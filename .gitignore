@@ -8,3 +8,6 @@ keystore.properties
 .idea/
 *.iml
 captures/
+
+# 验证记录是本地的东西，不进仓库
+VERIFY.md

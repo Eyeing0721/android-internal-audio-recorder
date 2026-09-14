@@ -90,7 +90,7 @@ adb shell appops set dev.eye.internalrec PROJECT_MEDIA allow
 
 ## 真机实测
 
-小米 2407FRK8EC / Android 16，`adb install` 后走完整链路（结果在 `VERIFY.md`）：
+小米 2407FRK8EC / Android 16，`adb install` 后走完整链路：
 
 | 文件 | 时长 | mean_volume | 情况 |
 |---|---|---|---|
